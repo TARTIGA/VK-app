@@ -1,0 +1,5 @@
+{
+  "dependencies": {
+    "@vkontakte/vkui": "^3.11.7"
+  }
+}
