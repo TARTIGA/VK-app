@@ -12,6 +12,7 @@
     "@vkontakte/vk-bridge": "^2.2.4",
     "@vkontakte/vkui": "^3.11.7",
     "@vkontakte/vkui-connect": "^1.5.4",
+    "firebase": "^8.0.0",
     "prop-types": "^15.6.1",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
