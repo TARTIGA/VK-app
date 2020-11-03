@@ -68,7 +68,7 @@ export const checkFormData = (payload:any) =>  async(dispatch: Dispatch, store: 
       payload: checkInfo,
     });
   } catch (error) {
-    console.error(['CHECK_FORM_DATA ', error]);
+    console.error(['ERROR CHECK_FORM_DATA ', error]);
     dispatch({
       type: `${CHECK_FORM_DATA}${FAIL}`,
     });

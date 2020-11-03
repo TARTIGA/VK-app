@@ -32,13 +32,9 @@ export const Form = ({ id, activePanel, headerLabel }: TScreen) => {
     acceptRules,
   } = userData
 
-  const [formValid, setFormValid] = useState<boolean>(true)
+  const [dataFire, setDataFire] = useState<any>([])
 
-  useEffect(() => {
-    console.log(["USER === ", userData])
-    console.log(["first_name", first_name])
-    console.log(["last_name", last_name])
-  })
+  const [formValid, setFormValid] = useState<boolean>(true)
 
   useEffect(() => {
     setFormValid(
@@ -53,11 +49,70 @@ export const Form = ({ id, activePanel, headerLabel }: TScreen) => {
     )
   }, [first_name, last_name, middle_name, dob, serial, acceptRules])
 
+  // Get all post every render
+  useEffect(() => {
+    fire
+      .firestore()
+      .collection("testing")
+      .onSnapshot((snap) => {
+        const testData = snap.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        }))
+        setDataFire(testData)
+        console.log(["testData", testData])
+      })
+  }, [])
+  //TODO: Get All posts
+  // useEffect(() => {
+  //   fire.firestore()
+  //     .collection('blog')
+  //     .doc(props.id)
+  //     .get()
+  //     .then(result => {
+  //       setBlog(result.data())
+  //     })
+  // }, []);
+
+  ////TODO: Create user method firebase
+  //  fire.auth()
+  //     .createUserWithEmailAndPassword(userName, password)
+  //     .catch((err) => {
+  //       console.log(err.code, err.message)
+  //     });
+
+  //// TODO: Sign IN user
+  // fire.auth()
+  //     .signInWithEmailAndPassword(username, password)
+  //     .catch((err) => {
+  //       console.log(err.code, err.message)
+  //       setNotification(err.message)
+  //       setTimeout(() => {
+  //         setNotification('')
+  //       }, 2000)
+  //     })
+
+  ////TODO: LogOut
+  //   const handleLogout = () => {
+  //   fire.auth()
+  //     .signOut()
+  //     .then(() => {
+  //       setNotification('Logged out')
+  //       setTimeout(() => {
+  //         setNotification('')
+  //       }, 2000)
+  //     });
+  // }
+
   const LABEL_BTN_POST = "Проверить КБМ"
   const TOP_TEXT = "Восстановим КБМ и снизим стоимость ОСАГО"
   const INFO_TEXT =
     "*Средний срок обработки заявки 1 - 3 дня. Максимально возможный - 7 дней. Если КБМ уменьшится на 5% или мы не сможем его уменьшить - мы вернём вам деньги"
-
+  /**
+   * Change Form Field
+   *
+   * @param {*} evt
+   */
   const handlerChangeField = (evt: any) => {
     const value =
       evt.target.type === "checkbox" ? evt.target.checked : evt.target.value
@@ -77,8 +132,11 @@ export const Form = ({ id, activePanel, headerLabel }: TScreen) => {
   }
   const sendFormFirebase = () => {
     fire.firestore().collection("testing").add({
-      title: "tit",
-      content: "content",
+      dob,
+      first_name,
+      last_name,
+      middle_name,
+      serial,
     })
   }
 
@@ -93,6 +151,13 @@ export const Form = ({ id, activePanel, headerLabel }: TScreen) => {
         >
           {TOP_TEXT}
         </Title>
+        <ul>
+          {dataFire.map((item: any) => (
+            <li key={item.id}>
+              `${item.first_name} - ${item.serial}`
+            </li>
+          ))}
+        </ul>
         <FormLayout style={{ margin: "10px" }}>
           {/* TODO: for fields */}
           {/*onChange={ (evt) => handlerChangeField(evt, "last_name")} */}
@@ -159,6 +224,7 @@ export const Form = ({ id, activePanel, headerLabel }: TScreen) => {
           <Button type="submit" size="xl" onClick={sendFormFirebase}>
             {"TEST FIREBASE"}
           </Button>
+
           <Caption level="1" weight="regular" style={{ marginBottom: 16 }}>
             {INFO_TEXT}
           </Caption>
